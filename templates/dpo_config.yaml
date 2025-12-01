@@ -1,0 +1,66 @@
+# =============================================================================
+# DPO Configuration Template
+# Direct Preference Optimization - learns from preference pairs
+# =============================================================================
+
+# Model Configuration
+base_model: "meta-llama/Llama-3.1-8B-Instruct"
+run_name: "dpo-experiment-001"
+
+# Reference model (frozen) - uses base_model if null
+ref_model: null
+
+# -----------------------------------------------------------------------------
+# Data Configuration
+# -----------------------------------------------------------------------------
+# Format: JSONL with {"prompt": "...", "chosen": "...", "rejected": "..."}
+train_file: "data/preferences.jsonl"
+val_file: null  # Optional
+
+# -----------------------------------------------------------------------------
+# DPO Hyperparameters
+# -----------------------------------------------------------------------------
+# Beta controls KL penalty (distance from reference model)
+# Higher beta = more conservative, stays closer to reference
+# Lower beta = more aggressive preference learning
+
+beta: 0.1  # Standard value, adjust based on needs
+           # 0.05 = aggressive
+           # 0.1 = standard (recommended)
+           # 0.2-0.5 = conservative (for safety alignment)
+           # 1.0+ = very conservative
+
+# -----------------------------------------------------------------------------
+# LoRA Configuration
+# -----------------------------------------------------------------------------
+# DPO typically needs lower rank than SFT
+lora_rank: 32
+lora_alpha: 32
+
+apply_to:
+  - mlp
+  - attn
+  # unembed optional for DPO
+
+# -----------------------------------------------------------------------------
+# Training Configuration
+# -----------------------------------------------------------------------------
+batch_size: 8           # Preference pairs use 2x memory
+learning_rate: 1.0e-5   # Lower than SFT
+num_steps: 5000         # Fewer steps usually needed
+eval_every: 200
+checkpoint_every: 500
+
+# -----------------------------------------------------------------------------
+# Output Paths
+# -----------------------------------------------------------------------------
+checkpoint_dir: "checkpoints"
+log_dir: "logs"
+
+# =============================================================================
+# METRICS TO MONITOR
+# =============================================================================
+# - Loss: Should decrease steadily
+# - Reward margin: chosen_reward - rejected_reward (should increase)
+# - Accuracy: How often chosen > rejected in reward space (target ~0.7-0.9)
+# =============================================================================

@@ -1,0 +1,85 @@
+# =============================================================================
+# GRPO Configuration Template
+# Group Relative Policy Optimization - memory-efficient RL
+# Best for: Math reasoning, code generation, verifiable rewards
+# =============================================================================
+
+# Model Configuration
+base_model: "meta-llama/Llama-3.1-8B-Instruct"
+run_name: "grpo-math-001"
+
+# -----------------------------------------------------------------------------
+# GRPO Parameters
+# -----------------------------------------------------------------------------
+# Group size: K samples generated per prompt
+# Higher = lower variance but more compute
+group_size: 8           # Standard (4-16 range)
+
+# Sampling temperature
+# Higher = more exploration
+temperature: 0.7        # Standard (0.5-1.0 range)
+
+# -----------------------------------------------------------------------------
+# Reward Configuration
+# -----------------------------------------------------------------------------
+# Reward type options:
+# - "math": Checks numerical answer correctness
+# - "code": Runs test cases
+# - "format": Checks structural compliance
+# - "custom": Load from reward_script
+
+reward_type: "math"
+reward_script: null     # Path to custom reward script if type="custom"
+
+# For custom reward scripts, implement:
+# def reward(prompt: str, response: str) -> float:
+#     ...
+#     return score  # 0.0 to 1.0
+
+# -----------------------------------------------------------------------------
+# LoRA Configuration
+# -----------------------------------------------------------------------------
+# KEY INSIGHT: RL needs much lower rank than SFT
+# RL absorbs ~1000x less information per token
+# Even rank-1 works for many RL tasks!
+
+lora_rank: 8            # Low rank OK for RL
+lora_alpha: 16
+
+apply_to:
+  - mlp
+  - attn
+
+# -----------------------------------------------------------------------------
+# Training Configuration
+# -----------------------------------------------------------------------------
+batch_size: 4           # Number of prompts per batch
+                        # Total samples = batch_size × group_size
+learning_rate: 1.0e-5   # Standard for RL
+num_steps: 2000         # Usually fewer steps needed
+max_response_tokens: 2048
+
+# PPO-like parameters (optional stability enhancements)
+clip_ratio: 0.2         # PPO clipping
+entropy_coef: 0.01      # Exploration bonus
+kl_coef: 0.1            # KL penalty to reference (0 to disable)
+
+# -----------------------------------------------------------------------------
+# Data Configuration
+# -----------------------------------------------------------------------------
+# Format: JSONL with {"prompt": "..."} or {"question": "..."}
+prompt_file: "data/prompts.jsonl"
+
+# -----------------------------------------------------------------------------
+# Output Paths
+# -----------------------------------------------------------------------------
+checkpoint_dir: "checkpoints"
+log_dir: "logs"
+
+# =============================================================================
+# METRICS TO MONITOR
+# =============================================================================
+# - Mean reward: Should increase over training
+# - Max reward: Upper bound on current capability
+# - Reward std: Diversity of solutions (some std is healthy)
+# =============================================================================

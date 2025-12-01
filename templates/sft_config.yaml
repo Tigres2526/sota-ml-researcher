@@ -1,0 +1,71 @@
+# =============================================================================
+# SFT Configuration Template
+# Research-backed defaults from Thinking Machines "LoRA Without Regret"
+# =============================================================================
+
+# Model Configuration
+base_model: "meta-llama/Llama-3.1-8B-Instruct"
+run_name: "sft-experiment-001"
+
+# -----------------------------------------------------------------------------
+# Data Configuration
+# -----------------------------------------------------------------------------
+# Format: JSONL with {"input": "...", "output": "..."} or {"prompt": "...", "completion": "..."}
+train_file: "data/train.jsonl"
+val_file: "data/val.jsonl"
+
+# -----------------------------------------------------------------------------
+# LoRA Configuration
+# -----------------------------------------------------------------------------
+# CRITICAL: Apply to ALL layers per Thinking Machines research
+# Attention-only significantly underperforms MLP+attention
+
+lora_rank: 64           # Adjust based on dataset size and model
+lora_alpha: 32          # Scaling factor (typically 32 or equal to rank)
+
+# Target modules - MUST include MLP layers
+apply_to:
+  - mlp                 # Gate, up, down projections (MOST IMPORTANT)
+  - attn                # Q, K, V, O projections
+  - unembed             # lm_head for generation quality
+
+# -----------------------------------------------------------------------------
+# Training Configuration
+# -----------------------------------------------------------------------------
+max_seq_len: 4096       # Context length
+batch_size: 16          # Adjust for GPU memory
+learning_rate: null     # Auto-derived as 10x FullFT if null
+
+# Duration
+num_steps: 10000        # Total training steps
+# num_epochs: 1         # Alternative: specify epochs instead of steps
+
+# Checkpointing
+eval_every: 500         # Validation frequency
+checkpoint_every: 1000  # Save checkpoints
+
+# Regularization
+weight_decay: 0.0       # Usually 0 for LoRA
+
+# -----------------------------------------------------------------------------
+# Model Architecture (for capacity calculation)
+# -----------------------------------------------------------------------------
+# These are auto-detected for known models but can be specified manually
+hidden_dim: 4096        # Llama 3.1 8B
+num_layers: 32          # Llama 3.1 8B
+
+# -----------------------------------------------------------------------------
+# Output Paths
+# -----------------------------------------------------------------------------
+checkpoint_dir: "checkpoints"
+log_dir: "logs"
+
+# =============================================================================
+# CAPACITY VALIDATION
+# =============================================================================
+# Before training, run: python sft_trainer.py --config this_file.yaml --validate-only
+#
+# Rule: LoRA_params × 2 >= dataset_tokens
+#
+# If undercapacity, increase lora_rank or reduce dataset size
+# =============================================================================

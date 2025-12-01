@@ -1,0 +1,94 @@
+# =============================================================================
+# LLM-as-Judge Evaluation Configuration
+# Pairwise comparison with position debiasing
+# =============================================================================
+
+# Judge Configuration
+judge_model: "claude-sonnet-4-20250514"  # Use strong model as judge
+                                          # Options: claude-sonnet-4-20250514, claude-opus-4-20250514
+
+# -----------------------------------------------------------------------------
+# Test Data
+# -----------------------------------------------------------------------------
+# Format: JSONL with {"prompt": "..."} or {"input": "..."}
+test_set: "data/test.jsonl"
+
+# Number of comparisons to run
+num_samples: 200        # Minimum 100, recommend 200+ for reliable results
+
+# -----------------------------------------------------------------------------
+# Models to Compare
+# -----------------------------------------------------------------------------
+baseline_model: "meta-llama/Llama-3.1-8B-Instruct"
+finetuned_model: "checkpoints/best"
+
+# If models are already run, provide pre-generated responses:
+# baseline_responses: "data/baseline_responses.jsonl"
+# finetuned_responses: "data/finetuned_responses.jsonl"
+
+# -----------------------------------------------------------------------------
+# Evaluation Settings
+# -----------------------------------------------------------------------------
+# Position debiasing: Run both orderings (A,B) and (B,A)
+# If they disagree, declare TIE to avoid position bias
+position_debias: true
+
+# Number of concurrent judge API calls
+parallel_judges: 10     # Balance speed vs rate limits
+
+# -----------------------------------------------------------------------------
+# Rubric
+# -----------------------------------------------------------------------------
+# Customize for your specific task
+rubric: |
+  You are an expert evaluator comparing AI assistant responses.
+
+  Evaluate each response on these criteria:
+
+  1. **Correctness** (0-5): Is the answer factually accurate and complete?
+     - 0: Completely wrong or irrelevant
+     - 3: Mostly correct with minor errors
+     - 5: Perfectly accurate and comprehensive
+
+  2. **Helpfulness** (0-5): Does it fully address the user's actual need?
+     - 0: Misses the point entirely
+     - 3: Partially addresses the question
+     - 5: Fully helpful with actionable information
+
+  3. **Clarity** (0-5): Is it well-organized and easy to understand?
+     - 0: Confusing and poorly structured
+     - 3: Understandable but could be clearer
+     - 5: Crystal clear and well-organized
+
+  For each criterion:
+  1. Quote relevant parts of each response
+  2. Explain strengths and weaknesses
+  3. Give a score (0-5)
+
+  Finally, state which response is better overall: "A", "B", or "TIE".
+
+# -----------------------------------------------------------------------------
+# Output Configuration
+# -----------------------------------------------------------------------------
+output_dir: "eval_results"
+save_judgments: true    # Save detailed per-item judgments
+
+# Output files created:
+# - eval_results/judgments.jsonl: Full judgment details
+# - eval_results/metrics.json: Aggregate statistics
+
+# =============================================================================
+# INTERPRETING RESULTS
+# =============================================================================
+# Win Rate Interpretation:
+# - < 45%: Regression (finetuned is worse)
+# - 45-55%: No significant difference
+# - 55-65%: Modest improvement
+# - 65-75%: Strong improvement
+# - > 75%: Major improvement (verify not overfitting)
+#
+# Confidence Rate:
+# - < 60%: High position bias, results unreliable
+# - 60-80%: Moderate bias, interpret cautiously
+# - > 80%: Low bias, results reliable
+# =============================================================================

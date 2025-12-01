@@ -1,0 +1,23 @@
+{
+  "name": "sota-ml-researcher",
+  "version": "1.0.0",
+  "description": "SOTA ML/LLM researcher plugin - combines deep research knowledge with practical Tinker-based implementation for SFT, DPO, GRPO training and LLM-as-judge evaluation",
+  "skills": [
+    { "path": "skills/researcher.md" }
+  ],
+  "commands": [
+    { "path": "commands/run_sft.md" },
+    { "path": "commands/run_dpo.md" },
+    { "path": "commands/run_grpo.md" },
+    { "path": "commands/run_eval.md" },
+    { "path": "commands/analyze_run.md" }
+  ],
+  "dependencies": [
+    "tinker>=0.1.0",
+    "tinker-cookbook>=0.1.0",
+    "anthropic>=0.30.0",
+    "torch>=2.0.0",
+    "pyyaml>=6.0",
+    "numpy>=1.24.0"
+  ]
+}
