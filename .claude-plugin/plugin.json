@@ -1,15 +1,8 @@
 {
-  "name": "sota_ml_researcher",
+  "name": "sota-ml-researcher",
+  "description": "Expert ML/RL/SL researcher for LoRA/QLoRA, DPO, GRPO training with research-backed defaults from Thinking Machines and DeepSeek",
   "version": "1.0.0",
-  "description": "A Claude Code plugin that teaches Claude how to be an expert ML/RL/SL researcher for LoRA/QLoRA fine-tuning, DPO, GRPO training with research-backed defaults from Thinking Machines and DeepSeek.",
-  "skills": [
-    { "path": "skills/researcher.md" }
-  ],
-  "commands": [
-    { "path": "commands/run_sft.md" },
-    { "path": "commands/run_dpo.md" },
-    { "path": "commands/run_grpo.md" },
-    { "path": "commands/run_eval.md" },
-    { "path": "commands/analyze_run.md" }
-  ]
+  "author": {
+    "name": "Tigres2526"
+  }
 }
