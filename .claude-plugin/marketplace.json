@@ -1,34 +1,12 @@
 {
-  "name": "sota-ml-researcher-marketplace",
+  "name": "sota-ml-researcher",
   "owner": {
-    "name": "Tigres2526",
-    "email": "tigres2526@users.noreply.github.com"
+    "name": "Tigres2526"
   },
   "plugins": [
     {
-      "name": "sota-ml-researcher",
-      "source": "./",
-      "description": "Expert ML/RL/SL researcher plugin - LoRA/QLoRA, DPO, GRPO training with research-backed defaults from Thinking Machines & DeepSeek",
-      "version": "1.0.0",
-      "author": {
-        "name": "Tigres2526"
-      },
-      "homepage": "https://github.com/Tigres2526/sota-ml-researcher",
-      "repository": "https://github.com/Tigres2526/sota-ml-researcher",
-      "license": "MIT",
-      "keywords": [
-        "machine-learning",
-        "llm",
-        "fine-tuning",
-        "lora",
-        "qlora",
-        "dpo",
-        "grpo",
-        "rlhf",
-        "evaluation",
-        "tinker"
-      ],
-      "category": "machine-learning"
+      "name": "sota_ml_researcher",
+      "source": "./"
     }
   ]
 }

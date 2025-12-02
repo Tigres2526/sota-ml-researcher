@@ -1,29 +1,15 @@
 {
-  "name": "sota-ml-researcher",
+  "name": "sota_ml_researcher",
   "version": "1.0.0",
-  "description": "SOTA ML/LLM researcher plugin - LoRA/QLoRA, DPO, GRPO training with research-backed defaults from Thinking Machines & DeepSeek",
-  "author": {
-    "name": "Tigres2526",
-    "email": "tigres2526@users.noreply.github.com"
-  },
-  "homepage": "https://github.com/Tigres2526/sota-ml-researcher",
-  "repository": "https://github.com/Tigres2526/sota-ml-researcher",
-  "license": "MIT",
-  "keywords": [
-    "machine-learning",
-    "llm",
-    "fine-tuning",
-    "lora",
-    "qlora",
-    "dpo",
-    "grpo",
-    "rlhf",
-    "evaluation",
-    "tinker"
+  "description": "A Claude Code plugin that teaches Claude how to be an expert ML/RL/SL researcher for LoRA/QLoRA fine-tuning, DPO, GRPO training with research-backed defaults from Thinking Machines and DeepSeek.",
+  "skills": [
+    { "path": "skills/researcher.md" }
   ],
-  "category": "machine-learning",
-  "commands": "./commands",
-  "agents": [
-    "./skills/researcher.md"
+  "commands": [
+    { "path": "commands/run_sft.md" },
+    { "path": "commands/run_dpo.md" },
+    { "path": "commands/run_grpo.md" },
+    { "path": "commands/run_eval.md" },
+    { "path": "commands/analyze_run.md" }
   ]
 }
